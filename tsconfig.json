@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "target": "ES5",
+    "noImplicitAny": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "declaration": true,
+    "noEmit": true,
+    "lib": ["ES2015", "DOM"],
+    "strict": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

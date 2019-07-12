@@ -1,0 +1,27 @@
+{
+  "name": "TFP",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build public/index.html",
+    "dev": "parcel public/index.html"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-router": "^5.0.3",
+    "@types/react-router-dom": "^4.3.4",
+    "parcel-bundler": "^1.12.3",
+    "typescript": "^3.5.3"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.2.0",
+    "@material-ui/icons": "^4.2.1",
+    "dom-loaded": "^1.2.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router": "^5.0.1",
+    "react-router-dom": "^5.0.1"
+  }
+}
