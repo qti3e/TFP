@@ -9,7 +9,8 @@
     "declaration": true,
     "noEmit": true,
     "lib": ["ES2015", "DOM"],
-    "strict": true
+    "strict": true,
+    "downlevelIteration": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

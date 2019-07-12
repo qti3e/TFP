@@ -13,12 +13,14 @@
     "@types/react-router": "^5.0.3",
     "@types/react-router-dom": "^4.3.4",
     "parcel-bundler": "^1.12.3",
+    "sass": "^1.22.4",
     "typescript": "^3.5.3"
   },
   "dependencies": {
     "@material-ui/core": "^4.2.0",
     "@material-ui/icons": "^4.2.1",
     "dom-loaded": "^1.2.0",
+    "notistack": "^0.8.8",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router": "^5.0.1",

@@ -1,14 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import domLoaded from "dom-loaded";
+import { App } from "./components/app";
+import "./styles.scss";
 
-const Main = () => <div>Hello</div>;
-
-async function main() {
-  await domLoaded;
-
+domLoaded.then(() => {
   const root = document.getElementById("root");
-  ReactDOM.render(<Main />, root);
-}
-
-main();
+  ReactDOM.render(<App />, root);
+});
