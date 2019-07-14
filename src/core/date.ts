@@ -98,8 +98,7 @@ export function jsDate2TimeRecord(d: Date): TimeRecord {
     date: d.getUTCDate(),
     month: d.getUTCMonth(),
     week: jsGetWeekNumber(d)[1],
-    day: weekdays[d.getUTCDay()],
-    ...({ _: d.toUTCString() } as any)
+    day: weekdays[d.getUTCDay()]
   };
 }
 
