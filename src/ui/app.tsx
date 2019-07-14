@@ -12,6 +12,7 @@ import AppBar from "./appBar";
 import Widget from "./widget";
 import Progress from "./progress";
 import Heatmap from "./heat";
+import Tasks from "./tasks";
 import DB from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -57,7 +58,9 @@ const App = () => {
             </Widget>
           </Grid>
           <Grid item xs={8}>
-            <Widget title="Tasks">CCDF</Widget>
+            <Widget title="Tasks">
+              <Tasks items={[]} setChecked={() => null} />
+            </Widget>
           </Grid>
         </Grid>
       </Container>

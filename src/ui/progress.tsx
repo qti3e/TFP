@@ -9,18 +9,21 @@ interface ProgressProps {
 
 const Progress: FunctionComponent<ProgressProps> = props => {
   const percentage = props.value;
+  const text = percentage === 100 ? "🎉" : `${percentage}%`;
+  const color = percentage === 100 ? "#4CAF50" : theme.palette.secondary.light;
+
   return (
     <CircularProgressbar
       styles={buildStyles({
         rotation: 1 / 2 + 1 / 8,
         strokeLinecap: "butt",
         trailColor: theme.palette.grey.A100,
-        pathColor: theme.palette.secondary.light,
+        pathColor: color,
         textColor: theme.palette.secondary.dark
       })}
       circleRatio={0.75}
       value={percentage}
-      text={`${percentage}%`}
+      text={text}
     />
   );
 };

@@ -17,6 +17,8 @@ export function createDailyPlan(
   tasks: Task[],
   date: Date
 ): Task[] {
+  if (tasks.length === 0) return [];
+
   // Never change function parameter!
   tasks = [...tasks];
 

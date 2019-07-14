@@ -19,9 +19,7 @@ const plan = createDailyPlan([], myTasks, new Date("July 14, 2019"));
 console.log(plan);
 console.log("---");
 
-const history = plan.map(task =>
-  createHistoryRecord(task, new Date("July 14, 2019"))
-);
+const history = plan.map(task => createHistoryRecord(task, new Date()));
 
 console.log(history);
 console.log("---");
