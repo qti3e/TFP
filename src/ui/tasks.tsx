@@ -78,8 +78,8 @@ const Tasks: FunctionComponent<TasksProps> = props => {
         if (task.startAt) {
           const { hours, minutes } = date.parseTime(task.startAt);
           const d = new Date();
-          d.setUTCHours(hours);
-          d.setUTCMinutes(minutes);
+          d.setHours(hours);
+          d.setMinutes(minutes);
           detailItems.push(
             <span className={classes.iconContainer} key="start-at">
               <CalendarIcon />
