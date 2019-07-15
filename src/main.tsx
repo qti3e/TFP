@@ -3,14 +3,14 @@ import ReactDOM from "react-dom";
 import domLoaded from "dom-loaded";
 import { ThemeProvider } from "@material-ui/styles";
 import theme from "./theme";
-import App from "./ui/app";
+import Index from "./ui/index";
 import "typeface-roboto";
 import "date-fns";
 import "./styles.scss";
 
 const AppWithTheme = () => (
   <ThemeProvider theme={theme}>
-    <App />
+    <Index />
   </ThemeProvider>
 );
 

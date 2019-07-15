@@ -191,12 +191,12 @@ const TaskDialog: FunctionComponent<TaskDialogProps> = props => {
       );
     }
 
-    console.log(task);
     await DB.newTask(task);
-    props.onChange();
 
     setOpen(false);
     reset();
+
+    props.onChange();
   }
 
   return (

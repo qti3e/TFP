@@ -15,9 +15,9 @@ const Heatmap: FunctionComponent<HeatProps> = props => {
     if (!value || !value.date) {
       return null;
     }
-    // Configuration for react-tooltip
+
     return {
-      "data-tip": `${value.date} has count: ${value.count}`
+      "data-tip": `${value.count} tasks done on ${value.date.toDateString()}`
     };
   };
 
@@ -44,9 +44,7 @@ const Heatmap: FunctionComponent<HeatProps> = props => {
         startDate={startDate}
         endDate={new Date()}
         classForValue={value => {
-          if (!value) {
-            return "color-empty";
-          }
+          if (!value) return "color-empty";
           return `color-github-${value.count}`;
         }}
         tooltipDataAttrs={getTooltipDataAttrs}

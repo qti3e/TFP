@@ -4,7 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import SettingsIcon from "@material-ui/icons/Settings";
+import DB from "../store";
 
 const useStyles = makeStyles({
   root: {
@@ -25,8 +25,8 @@ const CustomAppBar = () => {
           <Typography variant="h6" color="inherit" className={classes.title}>
             The Fuckin' Plan
           </Typography>
-          <Button color="inherit">
-            <SettingsIcon />
+          <Button color="inherit" onClick={() => DB.logout()}>
+            Logout
           </Button>
         </Toolbar>
       </AppBar>

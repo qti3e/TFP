@@ -1,7 +1,7 @@
 import { Task } from "./tasks";
 import { TimeRecord, jsDate2TimeRecord } from "./date";
 
-interface HistoryRecord {
+export interface HistoryRecord {
   time: TimeRecord;
   taskUUID: string;
 }
