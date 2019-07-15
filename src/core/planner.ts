@@ -1,4 +1,4 @@
-import { Task, DueTask, RoutineTask, isAllowed } from "./tasks";
+import { Task, DueTask, RoutineTask, isAllowed, DayFilter } from "./tasks";
 import { History } from "./history";
 import {
   Minutes,
@@ -24,7 +24,7 @@ export function createDailyPlan(
 
   const today = jsDate2TimeRecord(date);
   const avg = getAvgTasksPerDay(tasks);
-  const maxDuration = avg + 90;
+  const maxDuration = avg + 10;
 
   let duration: Minutes = 0;
   const selectedTasks: Task[] = [];
@@ -117,6 +117,13 @@ export function createDailyPlan(
   return selectedTasks;
 }
 
+function getAllowedDaysNum(allowedOn: DayFilter | undefined): number {
+  if (!allowedOn) return 7;
+  let r = 0;
+  for (const day of weekdays) if (allowedOn[day]) r += 1;
+  return r;
+}
+
 function getAvgTasksPerDay(tasks: Task[]): Minutes {
   let sum: Minutes = 0;
   for (const task of tasks) {
@@ -125,7 +132,7 @@ function getAvgTasksPerDay(tasks: Task[]): Minutes {
     if (task.type === "routine") {
       duration *=
         task.period === "daily"
-          ? 210 / 1
+          ? (210 * getAllowedDaysNum(task.allowedOn)) / 7
           : task.period === "weekly"
           ? 210 / 7
           : // Monthly

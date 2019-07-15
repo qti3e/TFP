@@ -9,7 +9,7 @@ import {
 } from "./date";
 import { generateUUID } from "./uuid";
 
-type DayFilter = Partial<Record<Weekday, boolean>>;
+export type DayFilter = Partial<Record<Weekday, boolean>>;
 
 interface TaskBase {
   uuid: string;
