@@ -33,24 +33,23 @@ export const weekdays: ReadonlyArray<Weekday> = [
 ];
 
 export function jsDate2Time(date: Date): Time {
-  const hour = date.getUTCHours();
-  const minutes = date.getUTCMinutes();
+  const hour = date.getHours();
+  const minutes = date.getMinutes();
 
   return hour * 60 + minutes;
 }
 
 export function jsDate2Day(jsDate: Date): Day {
-  const year = jsDate.getUTCFullYear();
+  const year = jsDate.getFullYear();
   const month = jsDate.getMonth();
-  const date = jsDate.getUTCDate();
+  const date = jsDate.getDate();
 
   return [year, month, date];
 }
 
 export function day2jsDate(day: Day): Date {
   const [year, month, date] = day;
-  const UTC = Date.UTC(year, month, date);
-  const d = new Date(UTC);
+  const d = new Date(year, month, date);
 
   return d;
 }
@@ -65,8 +64,8 @@ export function parseTime(time: Time): { hours: number; minutes: number } {
 export function dayAndTime2jsDate(day: Day, time: Time): Date {
   const date = day2jsDate(day);
   const { hours, minutes } = parseTime(time);
-  date.setUTCHours(hours);
-  date.setUTCMinutes(minutes);
+  date.setHours(hours);
+  date.setMinutes(minutes);
 
   return date;
 }
