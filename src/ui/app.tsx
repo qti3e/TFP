@@ -114,7 +114,10 @@ const App = () => {
   });
 
   const checked = plan.filter(t => t.checked);
-  const progress = Number(((checked.length / plan.length) * 100).toFixed(2));
+  const progress =
+    plan.length > 0
+      ? Number(((checked.length / plan.length) * 100).toFixed(2))
+      : 100;
 
   return (
     <Fragment>
@@ -127,7 +130,7 @@ const App = () => {
               <Progress value={progress} />
             </Widget>
             <Widget title="Activity">
-              <Heatmap />
+              <Heatmap history={state.history} />
             </Widget>
           </Grid>
           <Grid item xs={8}>

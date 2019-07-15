@@ -2,8 +2,12 @@ import React, { Fragment, FunctionComponent } from "react";
 import ReactTooltip from "react-tooltip";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
+import { History } from "../core";
+import * as date from "../core/date";
 
-interface HeatProps {}
+interface HeatProps {
+  history: History;
+}
 
 const Heatmap: FunctionComponent<HeatProps> = props => {
   const getTooltipDataAttrs = (value: { date: Date; count: number }) => {
@@ -17,11 +21,28 @@ const Heatmap: FunctionComponent<HeatProps> = props => {
     };
   };
 
+  const countMap = new Map();
+
+  props.history.map(hr => {
+    const { year, month, date } = hr.time;
+    const jsDate = new Date(Date.UTC(year, month, date));
+    const key = jsDate.toDateString();
+    countMap.set(key, (countMap.get(key) || 0) + 1);
+  });
+
+  const values = [...countMap.keys()].map(key => ({
+    date: new Date(key),
+    count: countMap.get(key)
+  }));
+
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 3);
+
   return (
     <Fragment>
       <CalendarHeatmap
-        startDate={new Date("2016-01-01")}
-        endDate={new Date("2016-05-01")}
+        startDate={startDate}
+        endDate={new Date()}
         classForValue={value => {
           if (!value) {
             return "color-empty";
@@ -29,12 +50,7 @@ const Heatmap: FunctionComponent<HeatProps> = props => {
           return `color-github-${value.count}`;
         }}
         tooltipDataAttrs={getTooltipDataAttrs}
-        values={[
-          { date: "2016-01-02", count: 1 },
-          { date: "2016-01-03", count: 4 },
-          { date: "2016-01-05", count: 2 },
-          { date: "2016-02-05", count: 3 }
-        ]}
+        values={values}
       />
       <ReactTooltip />
     </Fragment>
