@@ -57,3 +57,4 @@ tmp
 
 *.sm
 package-lock.json
+.firebase

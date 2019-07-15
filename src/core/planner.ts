@@ -26,6 +26,8 @@ export function createDailyPlan(
   const avg = getAvgTasksPerDay(tasks);
   const maxDuration = avg + 10;
 
+  console.log("Avg", avg);
+
   let duration: Minutes = 0;
   const selectedTasks: Task[] = [];
   const add = (task: Task): void => {

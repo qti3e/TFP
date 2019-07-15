@@ -94,11 +94,11 @@ export function jsGetWeekNumber(d: Date): Week {
 
 export function jsDate2TimeRecord(d: Date): TimeRecord {
   return {
-    year: d.getUTCFullYear(),
-    date: d.getUTCDate(),
-    month: d.getUTCMonth(),
+    year: d.getFullYear(),
+    date: d.getDate(),
+    month: d.getMonth(),
     week: jsGetWeekNumber(d)[1],
-    day: weekdays[d.getUTCDay()]
+    day: weekdays[d.getDay()]
   };
 }
 
