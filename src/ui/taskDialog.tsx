@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, FunctionComponent } from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import DateFnsUtils from "@date-io/date-fns";
@@ -23,8 +23,18 @@ import Switch from "@material-ui/core/Switch";
 import Radio from "@material-ui/core/Radio";
 import RadioGroup from "@material-ui/core/RadioGroup";
 import Fade from "@material-ui/core/Fade";
+import TextField from "@material-ui/core/TextField";
 
-import { Weekday } from "../core";
+import DB from "../store";
+import {
+  Weekday,
+  weekdays as weekdaysList,
+  Task,
+  createDayFilter,
+  createDueTask,
+  createFixedTask,
+  createRoutineTask
+} from "../core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -47,7 +57,11 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const TaskDialog = () => {
+interface TaskDialogProps {
+  onChange(): void;
+}
+
+const TaskDialog: FunctionComponent<TaskDialogProps> = props => {
   const classes = useStyles();
 
   const [open, setOpen] = React.useState(false);
@@ -66,6 +80,32 @@ const TaskDialog = () => {
     Tuesday: false,
     Wednesday: false
   });
+  const [period, setPeriod] = React.useState<"daily" | "weekly" | "monthly">(
+    "daily"
+  );
+  const [reps, setReps] = React.useState<number>(1);
+  const [duration, setDuration] = React.useState<number>(30);
+  const [title, setTitle] = React.useState<string>("");
+
+  const reset = () => {
+    setPeriod("daily");
+    setSelectedDate(new Date());
+    setIsRoutine(false);
+    setIsDue(false);
+    setFixedTime(false);
+    setWeekdays({
+      Friday: false,
+      Monday: false,
+      Saturday: false,
+      Sunday: false,
+      Thursday: false,
+      Tuesday: false,
+      Wednesday: false
+    });
+    setReps(1);
+    setDuration(30);
+    setTitle("");
+  };
 
   function handleClickOpen() {
     setOpen(true);
@@ -73,6 +113,11 @@ const TaskDialog = () => {
 
   function handleClose() {
     setOpen(false);
+  }
+
+  function handleCancel() {
+    setOpen(false);
+    reset();
   }
 
   function handleDateChange(date: Date | null) {
@@ -95,6 +140,64 @@ const TaskDialog = () => {
       [name]: event.currentTarget.checked
     });
   };
+
+  function handlePeriodChange(event: React.ChangeEvent<unknown>) {
+    setPeriod((event.target as HTMLInputElement).value as any);
+  }
+
+  function handleRepsChange(_: unknown, newValue: number | number[]) {
+    setReps(Array.isArray(newValue) ? newValue[0] : newValue);
+  }
+
+  function handleDurationChange(_: unknown, newValue: number | number[]) {
+    setDuration(Array.isArray(newValue) ? newValue[0] : newValue);
+  }
+
+  function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(event.currentTarget.value);
+  }
+
+  async function handleAdd() {
+    const dayFilter = () => {
+      const days = weekdaysList.filter(k => weekdays[k]);
+      return createDayFilter(days);
+    };
+
+    let task: Task;
+
+    if (isRoutine) {
+      task = createRoutineTask(
+        title,
+        period,
+        reps,
+        fixedTime ? selectedDate! : undefined,
+        duration,
+        dayFilter()
+      );
+    } else if (isDue) {
+      task = createDueTask(
+        title,
+        selectedDate!,
+        fixedTime ? selectedDate! : undefined,
+        duration,
+        dayFilter()
+      );
+    } else {
+      task = createFixedTask(
+        title,
+        selectedDate!,
+        fixedTime ? selectedDate! : undefined,
+        duration
+      );
+    }
+
+    console.log(task);
+    await DB.newTask(task);
+    props.onChange();
+
+    setOpen(false);
+    reset();
+  }
 
   return (
     <Fragment>
@@ -132,6 +235,15 @@ const TaskDialog = () => {
               justify="space-between"
               alignItems="flex-start"
             >
+              <Grid item xs={12}>
+                <TextField
+                  label="Title"
+                  value={title}
+                  onChange={handleTitleChange}
+                  margin="normal"
+                  fullWidth={true}
+                />
+              </Grid>
               {isRoutine ? (
                 <Grid
                   container
@@ -143,7 +255,13 @@ const TaskDialog = () => {
                     <Typography variant="subtitle2" gutterBottom>
                       Period
                     </Typography>
-                    <RadioGroup aria-label="Period" name="period" row>
+                    <RadioGroup
+                      aria-label="Period"
+                      name="period"
+                      onChange={handlePeriodChange}
+                      value={period}
+                      row
+                    >
                       <FormControlLabel
                         value="daily"
                         control={<Radio />}
@@ -170,6 +288,8 @@ const TaskDialog = () => {
                       defaultValue={1}
                       valueLabelDisplay="auto"
                       marks
+                      value={reps}
+                      onChange={handleRepsChange}
                       min={1}
                       max={30}
                     />
@@ -244,13 +364,13 @@ const TaskDialog = () => {
 
               <Grid item xs={12}>
                 <Typography variant="subtitle2" gutterBottom>
-                  Duration
+                  Duration (Minutes)
                 </Typography>
                 <Slider
                   defaultValue={30}
-                  getAriaValueText={x => `${x} Minutes`}
-                  aria-labelledby="discrete-slider"
                   valueLabelDisplay="auto"
+                  value={duration}
+                  onChange={handleDurationChange}
                   step={5}
                   marks
                   min={10}
@@ -341,10 +461,10 @@ const TaskDialog = () => {
           </MuiPickersUtilsProvider>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleCancel} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" autoFocus>
+          <Button onClick={handleAdd} color="primary" autoFocus>
             Add
           </Button>
         </DialogActions>

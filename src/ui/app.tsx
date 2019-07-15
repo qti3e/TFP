@@ -13,6 +13,7 @@ import Heatmap from "./heat";
 import Tasks from "./tasks";
 import TaskDialog from "./taskDialog";
 import DB from "../store";
+import { Task, History, createDailyPlan } from "../core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -24,24 +25,75 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const load = async () => {
+  await DB.load();
+  const tasks = await DB.getTasks();
+  const history: History = [];
+  const todayPlan = createDailyPlan(history, tasks, new Date());
+
+  return {
+    tasks,
+    history,
+    todayPlan
+  };
+};
+
 const App = () => {
   const classes = useStyles();
-  const [loading, setLoading] = React.useState(true);
+  const [state, setState] = React.useState<{
+    loading: boolean;
+    tasks: Task[];
+    history: History;
+    todayPlan: Task[];
+  }>({ loading: true, tasks: [], history: [], todayPlan: [] });
+  const [checked, setChecked] = React.useState<number[]>([]);
 
-  if (loading) {
-    pMinDelay(DB.load(), 600).then(() => setLoading(false));
+  if (state.loading) {
+    pMinDelay(load(), 600).then(data => {
+      setState({
+        loading: false,
+        ...data
+      });
+    });
     return <CircularProgress className={classes.progress} />;
   }
+
+  const handleNewTask = () => {
+    setState({
+      ...state,
+      loading: true
+    });
+
+    pMinDelay(load(), 600).then(data => {
+      setState({
+        loading: false,
+        ...data
+      });
+    });
+  };
+
+  const plan = state.todayPlan.map((task, index) => ({
+    task,
+    checked: checked.indexOf(index) > -1
+  }));
+
+  const handleCheck = (index: number, value: boolean) => {
+    const newChecked = checked.filter(i => i !== index);
+    if (value) newChecked.push(index);
+    setChecked(newChecked);
+  };
+
+  const progress = Number(((checked.length / plan.length) * 100).toFixed(2));
 
   return (
     <Fragment>
       <AppBar />
-      <TaskDialog />
+      <TaskDialog onChange={handleNewTask} />
       <Container>
         <Grid container spacing={3}>
           <Grid item xs={4}>
             <Widget title="Progress">
-              <Progress value={60} />
+              <Progress value={progress} />
             </Widget>
             <Widget title="Activity">
               <Heatmap />
@@ -49,7 +101,7 @@ const App = () => {
           </Grid>
           <Grid item xs={8}>
             <Widget title="Tasks">
-              <Tasks items={[]} setChecked={() => null} />
+              <Tasks items={plan} setChecked={handleCheck} />
             </Widget>
           </Grid>
         </Grid>

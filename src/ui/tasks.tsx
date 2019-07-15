@@ -28,7 +28,7 @@ type TaskItem = {
 
 interface TasksProps {
   items: TaskItem[];
-  setChecked: (task: Task, checked: boolean) => void;
+  setChecked: (index: number, checked: boolean) => void;
 }
 
 const Tasks: FunctionComponent<TasksProps> = props => {
@@ -37,7 +37,7 @@ const Tasks: FunctionComponent<TasksProps> = props => {
 
   const handleToggle = (value: TaskItem) => () => {
     const newValue = !value.checked;
-    setChecked(value.task, newValue);
+    setChecked(items.indexOf(value), newValue);
   };
 
   if (items.length === 0) {
@@ -50,12 +50,12 @@ const Tasks: FunctionComponent<TasksProps> = props => {
 
   return (
     <List className={classes.root}>
-      {items.map(value => {
+      {items.map((value, index) => {
         const labelId = `checkbox-list-label-${value}`;
 
         return (
           <ListItem
-            key={value.task.uuid}
+            key={value.task.uuid + "-" + index}
             role={undefined}
             dense
             button

@@ -57,10 +57,11 @@ export function createDayFilterReverse(notAllowed: Weekday[]): DayFilter {
 export function createFixedTask(
   title: string,
   date: Date,
+  startAt?: Date,
   duration?: Minutes
 ): FixedTask {
   const day = jsDate2Day(date);
-  const time = jsDate2Time(date);
+  const time = startAt ? jsDate2Time(startAt) : undefined;
 
   return {
     type: "fixed",
@@ -76,16 +77,17 @@ export function createRoutineTask(
   title: string,
   period: "daily" | "weekly" | "monthly",
   perPeriod: number,
-  startAt?: Time,
+  startAt?: Date,
   duration?: Minutes,
   dayFilter?: DayFilter
 ): RoutineTask {
+  const time = startAt ? jsDate2Time(startAt) : undefined;
   return {
     type: "routine",
     uuid: generateUUID(),
     allowedOn: dayFilter,
+    startAt: time,
     title,
-    startAt,
     duration,
     period,
     perPeriod
@@ -95,13 +97,18 @@ export function createRoutineTask(
 export function createDueTask(
   title: string,
   dueTo: Date,
+  startAt?: Date,
+  duration?: Minutes,
   dayFilter?: DayFilter
 ): DueTask {
+  const time = startAt ? jsDate2Time(startAt) : undefined;
   return {
     type: "due",
     uuid: generateUUID(),
     allowedOn: dayFilter,
     dueTo: jsDate2Day(dueTo),
+    startAt: time,
+    duration,
     title
   };
 }
