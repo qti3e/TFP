@@ -13,7 +13,8 @@ import Heatmap from "./heat";
 import Tasks from "./tasks";
 import TaskDialog from "./taskDialog";
 import DB from "../store";
-import { Task, History, createDailyPlan } from "../core";
+import { Task, History, createDailyPlan, createHistoryRecord } from "../core";
+import * as date from "../core/date";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,8 +29,10 @@ const useStyles = makeStyles((theme: Theme) =>
 const load = async () => {
   await DB.load();
   const tasks = await DB.getTasks();
-  const history: History = [];
-  const todayPlan = createDailyPlan(history, tasks, new Date());
+  const history: History = await DB.getHistory();
+  const today = date.jsDate2TimeRecord(new Date());
+  const oldHistory = history.filter(hr => !date.isSameDay(today, hr.time));
+  const todayPlan = createDailyPlan(oldHistory, tasks, new Date());
 
   return {
     tasks,
@@ -46,7 +49,7 @@ const App = () => {
     history: History;
     todayPlan: Task[];
   }>({ loading: true, tasks: [], history: [], todayPlan: [] });
-  const [checked, setChecked] = React.useState<number[]>([]);
+  const today = date.jsDate2TimeRecord(new Date());
 
   if (state.loading) {
     pMinDelay(load(), 600).then(data => {
@@ -72,17 +75,45 @@ const App = () => {
     });
   };
 
-  const plan = state.todayPlan.map((task, index) => ({
-    task,
-    checked: checked.indexOf(index) > -1
-  }));
-
-  const handleCheck = (index: number, value: boolean) => {
-    const newChecked = checked.filter(i => i !== index);
-    if (value) newChecked.push(index);
-    setChecked(newChecked);
+  const done = state.history.filter(hr => date.isSameDay(hr.time, today));
+  const doneCopy = [...done];
+  const isDone = (task: Task): boolean => {
+    const index = doneCopy.findIndex(hr => hr.taskUUID === task.uuid);
+    if (index < 0) return false;
+    doneCopy.splice(index, 1);
+    return true;
   };
 
+  const plan = state.todayPlan.map((task, index) => ({
+    task,
+    checked: isDone(task)
+  }));
+
+  const handleCheck = async (index: number, checked: boolean) => {
+    if (plan[index].checked === checked) return;
+    const task = plan[index].task;
+
+    if (checked) {
+      await DB.push2History(createHistoryRecord(task, new Date()));
+    } else {
+      const hr = done.find(hr => hr.taskUUID === task.uuid);
+      await DB.delFromHistory(hr!);
+    }
+
+    setState({
+      ...state,
+      history: await DB.getHistory()
+    });
+  };
+
+  plan.sort((a, b) => {
+    if (a.checked === b.checked) return 0;
+    if (a.checked) return -1;
+    if (b.checked) return 1;
+    return 0;
+  });
+
+  const checked = plan.filter(t => t.checked);
   const progress = Number(((checked.length / plan.length) * 100).toFixed(2));
 
   return (
