@@ -3,8 +3,6 @@ import pMinDelay from "p-min-delay";
 
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import Fab from "@material-ui/core/Fab";
-import AddIcon from "@material-ui/icons/Add";
 import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 
@@ -13,16 +11,11 @@ import Widget from "./widget";
 import Progress from "./progress";
 import Heatmap from "./heat";
 import Tasks from "./tasks";
+import TaskDialog from "./taskDialog";
 import DB from "../store";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    fab: {
-      margin: theme.spacing(1),
-      position: "absolute",
-      bottom: theme.spacing(2),
-      right: theme.spacing(2)
-    },
     progress: {
       position: "absolute",
       top: "50vh",
@@ -43,11 +36,8 @@ const App = () => {
   return (
     <Fragment>
       <AppBar />
-      <Fab color="secondary" aria-label="Add" className={classes.fab}>
-        <AddIcon />
-      </Fab>
-
-      <Container fixed>
+      <TaskDialog />
+      <Container>
         <Grid container spacing={3}>
           <Grid item xs={4}>
             <Widget title="Progress">

@@ -7,13 +7,13 @@ export type WeekNumber = number;
 export type Day = [Year, Month, TFPDate]; // A day in the timeline.
 export type Week = [Year, WeekNumber];
 export type Weekday =
-  | "sunday"
-  | "monday"
-  | "tuesday"
-  | "wednesday"
-  | "thursday"
-  | "friday"
-  | "saturday";
+  | "Sunday"
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday";
 export type TimeRecord = {
   year: Year;
   month: Month;
@@ -23,13 +23,13 @@ export type TimeRecord = {
 };
 
 export const weekdays: ReadonlyArray<Weekday> = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday"
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday"
 ];
 
 export function jsDate2Time(date: Date): Time {

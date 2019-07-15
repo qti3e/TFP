@@ -10,7 +10,7 @@ const myTasks = [
     4,
     10 * 60 + 30,
     150,
-    tasks.createDayFilterReverse(["friday", "thursday"])
+    tasks.createDayFilterReverse(["Friday", "Thursday"])
   ),
   tasks.createDueTask("XXX", new Date("July 19, 2019 03:24:00"))
 ];
