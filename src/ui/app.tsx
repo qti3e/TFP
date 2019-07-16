@@ -43,6 +43,7 @@ const load = async () => {
 
 const App = () => {
   const classes = useStyles();
+  const [init, setInit] = React.useState<boolean>(true);
   const [state, setState] = React.useState<{
     loading: boolean;
     tasks: Task[];
@@ -51,13 +52,18 @@ const App = () => {
   }>({ loading: true, tasks: [], history: [], todayPlan: [] });
   const today = date.jsDate2TimeRecord(new Date());
 
-  if (state.loading) {
+  if (init) {
     pMinDelay(load(), 600).then(data => {
       setState({
         loading: false,
         ...data
       });
     });
+
+    setInit(false);
+  }
+
+  if (state.loading) {
     return <CircularProgress className={classes.progress} />;
   }
 
@@ -67,10 +73,11 @@ const App = () => {
       loading: true
     });
 
-    pMinDelay(load(), 600).then(data => {
+    pMinDelay(load(), 150).then(data => {
       setState({
-        loading: false,
-        ...data
+        ...state,
+        ...data,
+        loading: false
       });
     });
   };
